@@ -22,10 +22,10 @@ v = 1  # m/s
 misfit_matrix = np.zeros((int(15 / delta_r), int(10 / delta_r)))
 tdoa_matrix = np.zeros((int(15 / delta_r), int(10 / delta_r), sensors_geometry.shape[0]))
 # test times
-t1 = 16.74922424
-t2 = 25.8702747
-t3 = 36.82250459
-event_dt = np.array([[t2 - t1], [t3 - t2], [t3 - t1]])
+test_t1 = 16.74922424
+test_t2 = 25.8702747
+test_t3 = 36.82250459
+test_toas = (test_t1, test_t2, test_t3)
 
 
 # =================================
@@ -62,14 +62,16 @@ def create_cmap():
     return cmap_1
 
 
-def calc_tdoa_misfit(tdoa_mat, misfit_mat):
+def calc_tdoa_misfit(tdoa_mat, misfit_mat, toa_list=test_toas):
     """ calcs the misfit matrix, a matrix that represents how much each point in space is "close" to the claps point,
     TDOA wise
 
     :param tdoa_mat: zeroes matrix in the shape of [room_x, room_y, num of sensors]
     :param misfit_mat: zeroes matrix in the shape of the room
+    :param toa_list: list of toas
     :return: the TDOA misfit matrix
     """
+    event_dt = np.array([[toa_list[1] - toa_list[0]], [toa_list[2] - toa_list[1]], [toa_list[2] - toa_list[0]]])
     for i in range(tdoa_mat.shape[0]):
         for j in range(tdoa_mat.shape[1]):
             toa = np.sqrt((i * delta_r - sensors_geometry[:, 0]) ** 2 + (
